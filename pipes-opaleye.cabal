@@ -1,0 +1,30 @@
+name:                pipes-opaleye
+version:             0.1.0.0
+synopsis:            Stream opaleye query results using pipes
+homepage:            https://github.com/basvandijk/pipes-opaleye
+bug-reports:         https://github.com/basvandijk/pipes-opaleye/issues
+license:             BSD3
+license-file:        LICENSE
+author:              Bas van Dijk
+maintainer:          Bas van Dijk <v.dijk.bas@gmail.com>
+copyright:           Bas van Dijk
+category:            Database
+build-type:          Simple
+extra-source-files:  ChangeLog.md
+cabal-version:       >=1.10
+
+source-repository head
+  type:     git
+  location: https://github.com/basvandijk/pipes-opaleye
+
+library
+  exposed-modules:     Pipes.Opaleye.RunQuery
+  build-depends:       base >=4.9 && <4.11
+                     , opaleye
+                     , pipes
+                     , pipes-safe
+                     , product-profunctors
+                     , exceptions
+                     , postgresql-simple
+  hs-source-dirs:      src
+  default-language:    Haskell2010
