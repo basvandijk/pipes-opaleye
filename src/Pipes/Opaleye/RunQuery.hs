@@ -2,7 +2,7 @@
 
 module Pipes.Opaleye.RunQuery ( query ) where
 
-import Control.Exception (handle, throwTo, SomeException)
+import Control.Exception (handle, throwTo, fromException, SomeException, AsyncException(ThreadKilled))
 import Control.Monad.Catch (MonadMask)
 import Control.Monad.IO.Class (MonadIO, liftIO)
 import Opaleye (QueryRunner, Query, runQueryFold)
@@ -27,10 +27,12 @@ query conn query = do
     fork :: IO (MVar (Maybe haskells), ThreadId)
     fork = do
        myTid <- myThreadId
-       let throwAllToMe :: SomeException -> IO ()
-           throwAllToMe = throwTo myTid
+       let throwToMe :: SomeException -> IO ()
+           throwToMe ex = case fromException ex of
+                            Just ThreadKilled -> pure ()
+                            _ -> throwTo myTid ex
        mv <- newEmptyMVar
-       tid <- forkIOWithUnmask $ \unmask -> handle throwAllToMe $ unmask $ do
+       tid <- forkIOWithUnmask $ \unmask -> handle throwToMe $ unmask $ do
                 runQueryFold conn query () $ \() a -> putMVar mv (Just a)
                 putMVar mv Nothing
        pure (mv, tid)
