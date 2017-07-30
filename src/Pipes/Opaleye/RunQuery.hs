@@ -8,7 +8,7 @@ import Control.Monad.IO.Class (MonadIO, liftIO)
 import Opaleye (QueryRunner, Query, runQueryFold)
 import Data.Profunctor.Product.Default (Default)
 import Database.PostgreSQL.Simple (Connection)
-import Pipes (Producer, yield)
+import Pipes (ListT(Select), yield)
 import Pipes.Safe (SafeT, bracket)
 import Control.Concurrent (ThreadId, forkIOWithUnmask, killThread, myThreadId)
 import Control.Concurrent.MVar (MVar, newEmptyMVar, takeMVar, putMVar)
@@ -17,8 +17,8 @@ import Data.Foldable (for_)
 
 query :: forall columns haskells m
        . (Default QueryRunner columns haskells, MonadIO m, MonadMask m)
-      => Connection -> Query columns -> Producer haskells (SafeT m) ()
-query conn query = do
+      => Connection -> Query columns -> ListT (SafeT m) haskells
+query conn query = Select $ do
     bracket (liftIO fork) (liftIO . killThread . snd) $ \(mv, _tid) ->
       fix $ \loop -> do
         mbA <- liftIO $ takeMVar mv
