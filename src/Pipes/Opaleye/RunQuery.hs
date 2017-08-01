@@ -33,4 +33,4 @@ query conn chunkSize query = Select $
                (\f haskells -> pure $ (yield haskells *>) . f) id
         case r of
           Left  f -> f (pure ())
-          Right f -> f (pure ()) *> loop
+          Right f -> f loop
