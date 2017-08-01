@@ -20,7 +20,7 @@ source-repository head
 library
   exposed-modules:     Pipes.Opaleye.RunQuery
   build-depends:       base >=4.9 && <4.11
-                     , opaleye
+                     , opaleye >= 0.5.4
                      , pipes
                      , pipes-safe
                      , product-profunctors

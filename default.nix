@@ -36,7 +36,9 @@ let
                        then pkgs.haskellPackages
                        else pkgs.haskell.packages.${compiler};
 
-  drv = haskellPackages.callPackage f {};
+  drv = haskellPackages.callPackage f {
+    opaleye = haskellPackages.callPackage ./opaleye.nix {};
+  };
 
 in
 
