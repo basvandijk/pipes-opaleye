@@ -1,4 +1,4 @@
-{-# language ScopedTypeVariables, FlexibleContexts #-}
+{-# language FlexibleContexts #-}
 
 module Pipes.Opaleye.RunQuery ( query ) where
 
@@ -12,8 +12,7 @@ import Pipes (ListT(Select), yield)
 import Pipes.Safe (SafeT, bracket)
 import Data.Function (fix)
 
-query :: forall columns haskells m
-       . ( Default QueryRunner columns haskells
+query :: ( Default QueryRunner columns haskells
          , MonadIO m
          , MonadMask m
          )
